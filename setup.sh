@@ -1,16 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install Trivy if not already present
-if ! command -v trivy &>/dev/null; then
-    echo "==> Installation de Trivy..."
-    mkdir -p "$HOME/.local/bin"
-    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
-        | sh -s -- -b "$HOME/.local/bin"
-    export PATH="$HOME/.local/bin:$PATH"
-    grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc" \
-        || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+PASS="[OK]"
+FAIL="[MISSING]"
+errors=0
+
+check() {
+    local name="$1"
+    local cmd="$2"
+    if command -v "$cmd" &>/dev/null; then
+        echo "$PASS $name : $($cmd --version 2>&1 | head -n1)"
+    else
+        echo "$FAIL $name : not found"
+        errors=$((errors + 1))
+    fi
+}
+
+echo "==> Vérification des prérequis..."
+echo ""
+check "Git"    git
+check "Docker" docker
+check "Trivy"  trivy
+echo ""
+
+if [ "$errors" -gt 0 ]; then
+    echo "Des outils manquants ont été détectés."
+    echo ""
+    echo "Installez Trivy manuellement :"
+    echo "  https://aquasecurity.github.io/trivy/latest/getting-started/installation/"
+    echo ""
+    echo "Exemple (Linux/macOS) :"
+    echo "  curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \\"
+    echo "    | sh -s -- -b /usr/local/bin"
+    exit 1
 fi
 
-echo "Trivy $(trivy --version)"
-echo "Prêt."
+echo "Tout est en place. Vous pouvez démarrer le TP."

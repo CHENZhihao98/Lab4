@@ -25,7 +25,7 @@
 | Docker | `docker --version` |
 | Compte GitHub | accès à l'onglet Actions |
 
-> **Trivy est installé automatiquement par `setup.sh`** si absent.
+> `setup.sh` vérifie que les outils sont présents. Si Trivy est absent, il vous indique comment l'installer.
 
 ---
 
@@ -148,17 +148,28 @@ Indice si vous êtes bloqué : regardez `solution/Dockerfile` — mais essayez d
 
 ## Étape 4 — Intégrer dans la pipeline CI
 
-La pipeline est déjà configurée dans `.github/workflows/security.yml`.
+Le fichier `.github/workflows/security.yml` contient un squelette à compléter.
+
+Votre mission : écrire les steps manquants pour que le workflow GitHub Actions :
+
+1. Récupère le code source (checkout)
+2. Construise l'image Docker
+3. Installe Trivy sur le runner
+4. Lance Trivy contre l'image et **bloque le job** si des CVE HIGH ou CRITICAL sont détectées
+
+Une fois la pipeline écrite, committez et poussez :
 
 ```bash
-git add Dockerfile
-git commit -m "fix: image Docker durcie"
+git add Dockerfile .github/workflows/security.yml
+git commit -m "feat: pipeline CI avec Trivy"
 git push
 ```
 
-Rendez-vous sur l'onglet **Actions** de votre dépôt GitHub. Le job `Scan d'image conteneur (Trivy)` doit passer au vert.
+Rendez-vous sur l'onglet **Actions** de votre dépôt GitHub. Le job `Scan d'image conteneur (Trivy)` doit passer au vert uniquement si votre image est propre.
 
-Si le job est encore rouge, Trivy a trouvé des CVE HIGH ou CRITICAL dans votre image corrigée. Consultez les logs du job pour identifier ce qui reste.
+Questions :
+- Qu'est-ce qui déclenche le workflow ? Sur quelle(s) branche(s) ?
+- Que se passe-t-il si vous poussez l'image vulnérable d'origine ? Pourquoi est-ce utile dans un workflow réel ?
 
 ---
 
