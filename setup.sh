@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+install_node() {
+    echo "==> Installation de Node.js (LTS)..."
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+    apt-get install -y nodejs
+}
+
 install_trivy() {
     echo "==> Installation de Trivy..."
     curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
@@ -24,6 +30,16 @@ if command -v docker &>/dev/null; then
 else
     echo "[MISSING] Docker : installez Docker avant de continuer."
     exit 1
+fi
+
+# Node.js / npm
+if command -v node &>/dev/null && command -v npm &>/dev/null; then
+    echo "[OK] Node.js : $(node --version)"
+    echo "[OK] npm : $(npm --version)"
+else
+    install_node
+    echo "[OK] Node.js : $(node --version)"
+    echo "[OK] npm : $(npm --version)"
 fi
 
 # Trivy
