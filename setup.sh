@@ -1,38 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PASS="[OK]"
-FAIL="[MISSING]"
-errors=0
-
-check() {
-    local name="$1"
-    local cmd="$2"
-    if command -v "$cmd" &>/dev/null; then
-        echo "$PASS $name : $($cmd --version 2>&1 | head -n1)"
-    else
-        echo "$FAIL $name : not found"
-        errors=$((errors + 1))
-    fi
+install_trivy() {
+    echo "==> Installation de Trivy..."
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+        | sh -s -- -b /usr/local/bin
 }
 
 echo "==> Vérification des prérequis..."
 echo ""
-check "Git"    git
-check "Docker" docker
-check "Trivy"  trivy
-echo ""
 
-if [ "$errors" -gt 0 ]; then
-    echo "Des outils manquants ont été détectés."
-    echo ""
-    echo "Installez Trivy manuellement :"
-    echo "  https://aquasecurity.github.io/trivy/latest/getting-started/installation/"
-    echo ""
-    echo "Exemple (Linux/macOS) :"
-    echo "  curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \\"
-    echo "    | sh -s -- -b /usr/local/bin"
+# Git
+if command -v git &>/dev/null; then
+    echo "[OK] Git : $(git --version)"
+else
+    echo "[MISSING] Git : installez Git avant de continuer."
     exit 1
 fi
 
+# Docker
+if command -v docker &>/dev/null; then
+    echo "[OK] Docker : $(docker --version)"
+else
+    echo "[MISSING] Docker : installez Docker avant de continuer."
+    exit 1
+fi
+
+# Trivy
+if command -v trivy &>/dev/null; then
+    echo "[OK] Trivy : $(trivy --version | head -n1)"
+else
+    install_trivy
+    echo "[OK] Trivy : $(trivy --version | head -n1)"
+fi
+
+echo ""
 echo "Tout est en place. Vous pouvez démarrer le TP."
