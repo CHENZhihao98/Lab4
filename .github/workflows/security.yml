@@ -11,8 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # TODO 1 — Récupérer le code source du dépôt
+      # Indice : action officielle GitHub "actions/checkout"
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # TODO 2 — Construire l'image Docker locale
       # Indice : commande "docker build", taguée "vulnerable-api"
