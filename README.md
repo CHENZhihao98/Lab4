@@ -87,7 +87,7 @@ curl http://localhost:3000/health
 Lancez le script de simulation :
 
 ```bash
-bash attack-simulation.sh
+./attack-simulation.sh
 ```
 
 Le script simule ce qu'un attaquant ferait après avoir obtenu une exécution de code dans ce conteneur. Il ne vous dit pas quoi corriger — c'est votre job.
