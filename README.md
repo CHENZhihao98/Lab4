@@ -64,7 +64,7 @@ Lab2/
 Installez les outils nécessaires :
 
 ```bash
-bash setup.sh
+./setup.sh
 ```
 
 Construisez et démarrez l'API :
@@ -136,7 +136,7 @@ Après chaque correction, reconstruisez et relancez les checks :
 ```bash
 npm audit fix --force  # met à jour les dépendances vulnérables
 docker build -t vulnerable-api .
-bash attack-simulation.sh
+./attack-simulation.sh
 trivy image --severity HIGH,CRITICAL vulnerable-api
 ```
 
