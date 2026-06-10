@@ -37,6 +37,6 @@ jobs:
       # Indice : "actions/upload-artifact"
       - name: Upload Trivy report
         if: failure() # Only upload if the scan fails
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: trivy-report
