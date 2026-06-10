@@ -1,11 +1,8 @@
-FROM node:22
-
+FROM node:24-alpine
 WORKDIR /app
-
 COPY . .
-
-RUN npm install
-
-EXPOSE 3000
-
+RUN chown -R node:node /app
+USER node
+RUN npm install --omit=dev
 CMD ["node", "app.js"]
+EXPOSE 3000
